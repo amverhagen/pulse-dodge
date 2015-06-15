@@ -8,9 +8,11 @@ import com.amverhagen.pulsedodge.PulseDodge;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useAccelerometer = false;
+		config.useCompass = false;
 		initialize(new PulseDodge(), config);
 	}
 }
