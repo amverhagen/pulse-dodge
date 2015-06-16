@@ -5,17 +5,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CircleLine {
-	private int[] indexPositions;
+	private float[] indexPositions;
 	private int activeIndex;
 	private Sprite circle;
 
-	public CircleLine(int indices, int x_pos, int y_pos, int width, int height) {
-		int circleWidth = width / 12;
+	public CircleLine(int indices, float x_pos, float y_pos, int width,
+			int height) {
+		float circleWidth = (height/width) * 100f;
 		activeIndex = indices / 2;
-		indexPositions = new int[indices];
-		int sectionWidth = width / indices;
+		indexPositions = new float[indices];
+		float sectionWidth = width / indices;
 		for (int i = 0; i < indices; i++) {
-			indexPositions[i] = (sectionWidth / 2) - circleWidth / 2
+			indexPositions[i] = (sectionWidth / 2) - 75 / 2
 					+ (sectionWidth * i);
 		}
 
