@@ -11,18 +11,18 @@ public class CircleLine {
 
 	public CircleLine(int indices, float x_pos, float y_pos, int width,
 			int height) {
-		float circleWidth = height / (indices * 3);
+		float circleHeight = height / (indices * 3);
 		activeIndex = indices / 2;
 		indexPositions = new float[indices];
-		float sectionWidth = height / indices;
+		float sectionHeight = height / indices;
 		for (int i = 0; i < indices; i++) {
-			indexPositions[i] = (sectionWidth / 2) - circleWidth
-					+ (sectionWidth * i);
+			indexPositions[i] = (sectionHeight / 2) - circleHeight / 2
+					+ (sectionHeight * i);
 		}
 
 		circle = new Sprite(new Texture(Gdx.files.internal("green_circle.png")));
-		circle.setBounds(x_pos, indexPositions[activeIndex], circleWidth,
-				circleWidth);
+		circle.setBounds(x_pos, indexPositions[activeIndex], circleHeight,
+				circleHeight);
 	}
 
 	public void moveUp() {
@@ -37,6 +37,10 @@ public class CircleLine {
 			activeIndex--;
 		}
 		circle.setY(indexPositions[activeIndex]);
+	}
+
+	public float getCircleCenter() {
+		return circle.getY() + circle.getHeight() / 2;
 	}
 
 	public Sprite getCircle() {

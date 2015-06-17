@@ -1,6 +1,8 @@
 package com.amverhagen.pulsedodge;
 
 import com.amverhagen.pulsedodge.playcomponents.CircleLine;
+import com.amverhagen.pulsedodge.playcomponents.Dot;
+import com.amverhagen.pulsedodge.playcomponents.Line;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -11,6 +13,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -21,7 +25,10 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	private CircleLine circleLine;
 	private Viewport viewport;
 	private Camera camera;
+	private Line dotLine;
 	private Sprite background;
+	private ShapeRenderer shapeRenderer;
+	private float speed;
 
 	@Override
 	public void create() {
@@ -29,6 +36,8 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		camera.position.set(GAME_WORLD_WIDTH / 2, GAME_WORLD_HEIGHT / 2, 0);
 		viewport = new FitViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
+		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setColor(0, 1, 0, 1);
 		batch = new SpriteBatch();
 		background = new Sprite(new Texture(
 				Gdx.files.internal("background.png")));
@@ -36,6 +45,7 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		background.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 		circleLine = new CircleLine(5, GAME_WORLD_WIDTH / 3f, 0f,
 				GAME_WORLD_WIDTH / 12, GAME_WORLD_HEIGHT);
+		dotLine = new Line();
 
 		Gdx.input.setInputProcessor(this);
 	}
@@ -48,8 +58,12 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public void render() {
+		speed = 1000 * Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 1, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		dotLine.update(speed);
+		dotLine.AddDot(circleLine.getCircle().getX(),
+				circleLine.getCircleCenter());
 
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
@@ -57,6 +71,13 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		background.draw(batch);
 		circleLine.getCircle().draw(batch);
 		batch.end();
+
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.begin(ShapeType.Line);
+		for (Dot d : dotLine.getDots()) {
+			shapeRenderer.line(d.getX(), d.getY(), d.getX() + speed, d.getY());
+		}
+		shapeRenderer.end();
 	}
 
 	@Override
@@ -71,6 +92,16 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	}
 
 	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (screenX > Gdx.graphics.getWidth() / 2) {
+			circleLine.moveUp();
+		} else {
+			circleLine.moveDown();
+		}
+		return false;
+	}
+
+	@Override
 	public boolean keyUp(int keycode) {
 		// TODO Auto-generated method stub
 		return false;
@@ -79,17 +110,6 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public boolean keyTyped(char character) {
 		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println(screenX + "  " + Gdx.graphics.getWidth());
-		if (screenX > Gdx.graphics.getWidth() / 2) {
-			circleLine.moveUp();
-		} else {
-			circleLine.moveDown();
-		}
 		return false;
 	}
 
