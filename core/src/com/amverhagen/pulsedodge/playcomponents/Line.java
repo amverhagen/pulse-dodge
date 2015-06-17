@@ -15,7 +15,7 @@ public class Line {
 	public void AddDot(float x, float y) {
 		dotCreated = false;
 		for (Dot d : dots) {
-			if (d.getX() < 0) {
+			if (d.getX() < -10) {
 				d.setXY(x, y);
 				dotCreated = true;
 			}

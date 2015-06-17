@@ -75,7 +75,7 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
 		for (Dot d : dotLine.getDots()) {
-			shapeRenderer.line(d.getX(), d.getY(), d.getX() + speed, d.getY());
+			shapeRenderer.line(d.getX()-speed, d.getY(), d.getX() + speed, d.getY());
 		}
 		shapeRenderer.end();
 	}
