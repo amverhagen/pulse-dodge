@@ -8,9 +8,11 @@ public class CircleLine {
 	private float[] indexPositions;
 	private int activeIndex;
 	private Sprite circle;
+	private int indices;
 
 	public CircleLine(int indices, float x_pos, float y_pos, int width,
 			int height) {
+		this.indices = indices;
 		float circleHeight = height / (indices * 3);
 		activeIndex = indices / 2;
 		indexPositions = new float[indices];
@@ -26,7 +28,7 @@ public class CircleLine {
 	}
 
 	public void moveUp() {
-		if (activeIndex < 4) {
+		if (activeIndex < indices-1) {
 			activeIndex++;
 		}
 		circle.setY(indexPositions[activeIndex]);

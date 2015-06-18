@@ -61,21 +61,25 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		speed = 1000 * Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 1, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		dotLine.update(speed);
 		dotLine.AddDot(circleLine.getCircle().getX(),
 				circleLine.getCircleCenter());
 
 		camera.update();
+
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		background.draw(batch);
 		circleLine.getCircle().draw(batch);
 		batch.end();
 
+		System.out.println(dotLine.getDots().size());
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
 		for (Dot d : dotLine.getDots()) {
-			shapeRenderer.line(d.getX()-speed, d.getY(), d.getX() + speed, d.getY());
+			shapeRenderer.line(d.getX() - speed, d.getY(), d.getX() + speed,
+					d.getY());
 		}
 		shapeRenderer.end();
 	}
