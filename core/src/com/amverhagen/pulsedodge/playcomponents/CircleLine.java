@@ -27,8 +27,12 @@ public class CircleLine {
 				circleHeight);
 	}
 
+	public void update() {
+
+	}
+
 	public void moveUp() {
-		if (activeIndex < indices-1) {
+		if (activeIndex < indices - 1) {
 			activeIndex++;
 		}
 		circle.setY(indexPositions[activeIndex]);

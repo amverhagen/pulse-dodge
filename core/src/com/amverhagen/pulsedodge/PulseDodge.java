@@ -1,13 +1,13 @@
 package com.amverhagen.pulsedodge;
 
 import com.amverhagen.pulsedodge.playcomponents.CircleLine;
-import com.amverhagen.pulsedodge.playcomponents.Dot;
 import com.amverhagen.pulsedodge.playcomponents.Line;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,7 +37,6 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		viewport = new FitViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
 		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setColor(0, 1, 0, 1);
 		batch = new SpriteBatch();
 		background = new Sprite(new Texture(
 				Gdx.files.internal("background.png")));
@@ -62,9 +61,11 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		Gdx.gl.glClearColor(0, 1, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		dotLine.update(speed);
+		circleLine.update();
+
 		dotLine.AddDot(circleLine.getCircle().getX(),
 				circleLine.getCircleCenter());
+		dotLine.update(speed);
 
 		camera.update();
 
@@ -74,13 +75,11 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		circleLine.getCircle().draw(batch);
 		batch.end();
 
-		System.out.println(dotLine.getDots().size());
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
-		for (Dot d : dotLine.getDots()) {
-			shapeRenderer.line(d.getX() - speed, d.getY(), d.getX() + speed,
-					d.getY());
-		}
+		Gdx.gl.glLineWidth(6);
+		shapeRenderer.setColor(Color.GREEN);
+		dotLine.draw(shapeRenderer);
 		shapeRenderer.end();
 	}
 

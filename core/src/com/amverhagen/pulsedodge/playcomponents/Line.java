@@ -1,42 +1,54 @@
 package com.amverhagen.pulsedodge.playcomponents;
 
-import java.util.ArrayList;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class Line {
 
-	private ArrayList<Dot> dots;
-	private boolean dotCreated;
+	private Dot firstDot;
+	private Dot lastDot;
+	private int size;
 
 	public Line() {
-		dots = new ArrayList<Dot>();
-		dotCreated = false;
+		size = 0;
 	}
 
 	public void AddDot(float x, float y) {
-		
-		dotCreated = false;
-		
-		for (Dot d : dots) {
-			if (d.getX() < -10) {
-				d.setXY(x, y);
-				dotCreated = true;
-				break;
-			}
-		}
-		
-		if (!dotCreated) {
+		if (size == 0) {
 			Dot dot = new Dot(x, y);
-			dots.add(dot);
+			firstDot = dot;
+			lastDot = dot;
+			size++;
+		} else {
+			Dot dot = new Dot(x, y);
+			dot.setPrevious(lastDot);
+			lastDot.setNext(dot);
+			lastDot = dot;
+			size++;
+			if (firstDot.getX() < -10) {
+				Dot newFirst = firstDot.getNext();
+				newFirst.setPrevious(null);
+				firstDot = null;
+				firstDot = newFirst;
+				size--;
+			}
 		}
 	}
 
 	public void update(float speed) {
-		for (Dot d : dots) {
-			d.setX(d.getX() - speed);
+		Dot current = firstDot;
+		while (current.hasNext()) {
+			current.setX(current.getX() - speed);
+			current = current.getNext();
 		}
+
 	}
 
-	public ArrayList<Dot> getDots() {
-		return dots;
+	public void draw(ShapeRenderer renderer) {
+		Dot current = firstDot;
+		while (current.hasNext()) {
+			renderer.line(current.getX(), current.getY(), current.getNext()
+					.getX(), current.getNext().getY());
+			current = current.getNext();
+		}
 	}
 }
