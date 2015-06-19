@@ -1,5 +1,6 @@
 package com.amverhagen.pulsedodge;
 
+import com.amverhagen.pulsedodge.playcomponents.BlockWaves;
 import com.amverhagen.pulsedodge.playcomponents.CircleLine;
 import com.amverhagen.pulsedodge.playcomponents.Line;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -29,9 +30,12 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	private Sprite background;
 	private ShapeRenderer shapeRenderer;
 	private float speed;
+	private BlockWaves waves;
+	private float time;
 
 	@Override
 	public void create() {
+		time = 0;
 		camera = new OrthographicCamera();
 		camera.position.set(GAME_WORLD_WIDTH / 2, GAME_WORLD_HEIGHT / 2, 0);
 		viewport = new FitViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
@@ -42,10 +46,11 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 				Gdx.files.internal("background.png")));
 		background.setPosition(0, 0);
 		background.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-		circleLine = new CircleLine(5, GAME_WORLD_WIDTH / 3f, 0f,
+		circleLine = new CircleLine(5, GAME_WORLD_WIDTH / 5f, 0f,
 				GAME_WORLD_WIDTH / 12, GAME_WORLD_HEIGHT);
 		dotLine = new Line();
-
+		waves = new BlockWaves(0, 0, GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, 5);
+		Gdx.graphics.setVSync(true);
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -57,12 +62,17 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public void render() {
+		time = time + Gdx.graphics.getDeltaTime();
+		time = time + Gdx.graphics.getDeltaTime();
+		if (time > 1) {
+			time = 0;
+			waves.createWave();
+		}
 		speed = 1000 * Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0, 1, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		circleLine.update();
-
+		waves.updateLines(speed);
 		dotLine.AddDot(circleLine.getCircle().getX(),
 				circleLine.getCircleCenter());
 		dotLine.update(speed);
@@ -73,11 +83,11 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		batch.begin();
 		background.draw(batch);
 		circleLine.getCircle().draw(batch);
+		waves.draw(batch);
 		batch.end();
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		shapeRenderer.begin(ShapeType.Line);
-		Gdx.gl.glLineWidth(6);
+		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
 		dotLine.draw(shapeRenderer);
 		shapeRenderer.end();

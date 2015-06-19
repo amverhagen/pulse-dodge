@@ -40,14 +40,14 @@ public class Line {
 			current.setX(current.getX() - speed);
 			current = current.getNext();
 		}
-
 	}
 
 	public void draw(ShapeRenderer renderer) {
 		Dot current = firstDot;
 		while (current.hasNext()) {
-			renderer.line(current.getX(), current.getY(), current.getNext()
-					.getX(), current.getNext().getY());
+			// renderer.point(current.getX(), current.getY(), 0);
+			renderer.rectLine(current.getX(), current.getY(), current.getNext()
+					.getX(), current.getNext().getY(), 3);
 			current = current.getNext();
 		}
 	}

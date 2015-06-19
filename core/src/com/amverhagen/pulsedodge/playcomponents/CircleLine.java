@@ -28,21 +28,46 @@ public class CircleLine {
 	}
 
 	public void update() {
-
+		// if (movingUp) {
+		// circle.translateY(Gdx.graphics.getDeltaTime() * 2000);
+		// if (circle.getY() >= indexPositions[activeIndex]) {
+		// circle.setY(indexPositions[activeIndex]);
+		// movingUp = false;
+		// }
+		// } else if (movingDown) {
+		// circle.translateY(-(Gdx.graphics.getDeltaTime() * 2000));
+		// if (circle.getY() <= indexPositions[activeIndex]) {
+		// circle.setY(indexPositions[activeIndex]);
+		// movingDown = false;
+		// }
+		// }
 	}
 
 	public void moveUp() {
 		if (activeIndex < indices - 1) {
 			activeIndex++;
+			circle.setY(indexPositions[activeIndex]);
 		}
-		circle.setY(indexPositions[activeIndex]);
+		// if (!movingDown && !movingUp) {
+		// if (activeIndex < indices - 1) {
+		// activeIndex++;
+		// movingUp = true;
+		// }
+		// }
+
 	}
 
 	public void moveDown() {
 		if (activeIndex > 0) {
 			activeIndex--;
+			circle.setY(indexPositions[activeIndex]);
 		}
-		circle.setY(indexPositions[activeIndex]);
+		// if (!movingUp && !movingDown) {
+		// if (activeIndex > 0) {
+		// activeIndex--;
+		// movingDown = true;
+		// }
+		// }
 	}
 
 	public float getCircleCenter() {
