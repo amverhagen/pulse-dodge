@@ -2,12 +2,21 @@ package com.amverhagen.pulsedodge.playcomponents;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Pool;
 
 public class BlockWaves {
+	private final ArrayList<Block> activeBlocks = new ArrayList<Block>();
+	private final Pool<Block> blockPool = new Pool<Block>() {
+		@Override
+		protected Block newObject() {
+			return new Block();
+		}
+	};
 	private final ArrayList<WaveComponent> activeWaveComponents = new ArrayList<WaveComponent>();
 	private final Pool<WaveComponent> componentsPool = new Pool<WaveComponent>() {
 		@Override
@@ -30,6 +39,7 @@ public class BlockWaves {
 	private float blockHeight;
 	private float sectionHeight;
 	private float barWidth;
+	private TextureAtlas atlas;
 
 	public BlockWaves(float x, float y, float width, float height, int indices) {
 		this.x = x;
@@ -46,6 +56,8 @@ public class BlockWaves {
 		blockTexture = new Texture("small_green_block.png");
 		blurbTexture = new Texture("green_blurb.png");
 		barTexture = new Texture("tall_green_bar.png");
+		atlas = new TextureAtlas(
+				Gdx.files.internal("breaksprites.atlas"));
 	}
 
 	public void createBar() {
@@ -73,10 +85,17 @@ public class BlockWaves {
 
 			} else if (i != blankPosition) {
 
-				WaveComponent b = componentsPool.obtain();
-				b.init(x + width, (sectionHeight * i) + (sectionHeight * .15f),
-						blockWidth, blockHeight, ComponentType.BLOCK);
-				activeWaveComponents.add(b);
+				Block block = blockPool.obtain();
+				block.init(x + width, (sectionHeight * i)
+						+ (sectionHeight * .15f), blockWidth, blockHeight,
+						atlas);
+				activeBlocks.add(block);
+
+				// WaveComponent b = componentsPool.obtain();
+				// b.init(x + width, (sectionHeight * i) + (sectionHeight *
+				// .15f),
+				// blockWidth, blockHeight, ComponentType.BLOCK);
+				// activeWaveComponents.add(b);
 
 			}
 		}
@@ -84,16 +103,18 @@ public class BlockWaves {
 
 	public void updateLines(float speed, Sprite circle) {
 
-		for (WaveComponent b : activeWaveComponents) {
-			if (b.getType() == ComponentType.BLOCK)
-				if (circle.getX() < b.getX() + b.getWidth()
-						&& circle.getX() + circle.getWidth() > b.getX()
-						&& circle.getY() < b.getY() + b.getHeight()
-						&& circle.getY() + circle.getHeight() > b.getY()) {
-					b.setUnactive();
-				}
-			b.update(speed);
+		for (Block block : activeBlocks) {
+			if (circle.getX() < block.getX() + block.getWidth()
+					&& circle.getX() + circle.getWidth() > block.getX()
+					&& circle.getY() < block.getY() + block.getHeight()
+					&& circle.getY() + circle.getHeight() > block.getY()) {
+				block.setBreaking();
+			}
+			block.update(speed);
+		}
 
+		for (WaveComponent b : activeWaveComponents) {
+			b.update(speed);
 		}
 
 		WaveComponent b;
@@ -105,9 +126,24 @@ public class BlockWaves {
 				componentsPool.free(b);
 			}
 		}
+
+		Block block;
+		len = activeBlocks.size();
+		for (int i = len; --i >= 0;) {
+			block = activeBlocks.get(i);
+			if (block.isActive() == false) {
+				activeBlocks.remove(i);
+				blockPool.free(block);
+			}
+		}
 	}
 
 	public void draw(SpriteBatch batch) {
+
+		for (Block block : activeBlocks) {
+			batch.draw(block.getRegion(), block.getX(), block.getY(),
+					block.getWidth(), block.getHeight());
+		}
 		for (WaveComponent b : activeWaveComponents) {
 			if (b.getType() == ComponentType.BLOCK) {
 				batch.draw(blockTexture, b.getX(), b.getY(), b.getWidth(),
@@ -126,5 +162,6 @@ public class BlockWaves {
 		blurbTexture.dispose();
 		blockTexture.dispose();
 		barTexture.dispose();
+		atlas.dispose();
 	}
 }

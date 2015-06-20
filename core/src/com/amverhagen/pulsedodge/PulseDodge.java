@@ -67,7 +67,7 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 			waves.createWave();
 			waves.createBar();
 		}
-		speed = 1 * Gdx.graphics.getDeltaTime() * 500;
+		speed = 1 * Gdx.graphics.getDeltaTime() * 1000;
 
 		waves.updateLines(speed,circleLine.getCircle());
 
