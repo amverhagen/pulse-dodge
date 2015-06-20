@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -27,11 +25,10 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	private Viewport viewport;
 	private Camera camera;
 	private Line dotLine;
-	private Sprite background;
 	private ShapeRenderer shapeRenderer;
-	private float speed;
 	private BlockWaves waves;
 	private float time;
+	private float speed;
 
 	@Override
 	public void create() {
@@ -42,15 +39,10 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		viewport.apply();
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
-		background = new Sprite(new Texture(
-				Gdx.files.internal("background.png")));
-		background.setPosition(0, 0);
-		background.setSize(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-		circleLine = new CircleLine(5, GAME_WORLD_WIDTH / 5f, 0f,
+		circleLine = new CircleLine((byte) 5, GAME_WORLD_WIDTH / 5f, 0f,
 				GAME_WORLD_WIDTH / 12, GAME_WORLD_HEIGHT);
 		dotLine = new Line();
 		waves = new BlockWaves(0, 0, GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, 5);
-		Gdx.graphics.setVSync(true);
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -63,25 +55,25 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void render() {
 		time = time + Gdx.graphics.getDeltaTime();
-		time = time + Gdx.graphics.getDeltaTime();
-		if (time > 1) {
+		if (time > .5) {
 			time = 0;
 			waves.createWave();
 		}
-		speed = 1000 * Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClearColor(0, 1, 0f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		speed = 1 * Gdx.graphics.getDeltaTime() * 500;
 
 		waves.updateLines(speed);
+
 		dotLine.AddDot(circleLine.getCircle().getX(),
 				circleLine.getCircleCenter());
 		dotLine.update(speed);
 
 		camera.update();
 
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		background.draw(batch);
 		circleLine.getCircle().draw(batch);
 		waves.draw(batch);
 		batch.end();
@@ -89,8 +81,16 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
-		dotLine.draw(shapeRenderer);
+		 dotLine.draw(shapeRenderer);
 		shapeRenderer.end();
+	}
+
+	@Override
+	public void dispose() {
+		batch.dispose();
+		shapeRenderer.dispose();
+		circleLine.getCircle().getTexture().dispose();
+		waves.dispose();
 	}
 
 	@Override

@@ -6,7 +6,7 @@ public class Line {
 
 	private Dot firstDot;
 	private Dot lastDot;
-	private int size;
+	private short size;
 
 	public Line() {
 		size = 0;
@@ -18,37 +18,40 @@ public class Line {
 			firstDot = dot;
 			lastDot = dot;
 			size++;
+		} else if (firstDot.getX() < -10) {
+			if (firstDot == lastDot) {
+				firstDot.setXY(x, y);
+			} else {
+				Dot dot = new Dot(x, y);
+				dot.setNext(lastDot);
+				lastDot.setPrevious(dot);
+				lastDot = dot;
+				firstDot = firstDot.getPrevious();
+				firstDot.setNext(null);
+			}
 		} else {
 			Dot dot = new Dot(x, y);
-			dot.setPrevious(lastDot);
-			lastDot.setNext(dot);
+			dot.setNext(lastDot);
+			lastDot.setPrevious(dot);
 			lastDot = dot;
 			size++;
-			if (firstDot.getX() < -10) {
-				Dot newFirst = firstDot.getNext();
-				newFirst.setPrevious(null);
-				firstDot = null;
-				firstDot = newFirst;
-				size--;
-			}
 		}
 	}
 
 	public void update(float speed) {
 		Dot current = firstDot;
-		while (current.hasNext()) {
+		while (current.hasPrevious()) {
 			current.setX(current.getX() - speed);
-			current = current.getNext();
+			current = current.getPrevious();
 		}
 	}
 
 	public void draw(ShapeRenderer renderer) {
 		Dot current = firstDot;
-		while (current.hasNext()) {
-			// renderer.point(current.getX(), current.getY(), 0);
-			renderer.rectLine(current.getX(), current.getY(), current.getNext()
-					.getX(), current.getNext().getY(), 3);
-			current = current.getNext();
+		while (current.hasPrevious()) {
+			renderer.rectLine(current.getX(), current.getY(), current
+					.getPrevious().getX(), current.getPrevious().getY(), 3);
+			current = current.getPrevious();
 		}
 	}
 }

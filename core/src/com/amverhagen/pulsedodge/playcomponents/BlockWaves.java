@@ -3,19 +3,25 @@ package com.amverhagen.pulsedodge.playcomponents;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Pool;
 
 public class BlockWaves {
+	private final ArrayList<WaveComponent> activeWaveComponents = new ArrayList<WaveComponent>();
+	private final Pool<WaveComponent> componentsPool = new Pool<WaveComponent>() {
+		@Override
+		protected WaveComponent newObject() {
+			return new WaveComponent();
+		}
+	};
 
-	private ArrayList<Sprite> blocks;
-	private ArrayList<Sprite> blurbs;
 	private Texture blockTexture;
 	private Texture blurbTexture;
 	private float x;
 	private float width;
 	private int indices;
-	private float blurbX;
+	private float initBlurbX;
+	private float initBlurbY;
 	private float blurbWidth;
 	private float blockWidth;
 	private float blockHeight;
@@ -27,13 +33,12 @@ public class BlockWaves {
 		this.indices = indices;
 		sectionHeight = height / indices;
 		blurbWidth = sectionHeight * .30f;
-		blockWidth = width / 15;
+		blockWidth = width / 25;
 		blockHeight = sectionHeight * .75f;
-		blurbX = (x + width) + (blockWidth / 2) - (blurbWidth / 2);
-		blockTexture = new Texture("green_block.png");
+		initBlurbX = (x + width) + (blockWidth / 2) - (blurbWidth / 2);
+		initBlurbY = ((sectionHeight / 2) - blurbWidth / 2);
+		blockTexture = new Texture("small_green_block.png");
 		blurbTexture = new Texture("green_blurb.png");
-		blurbs = new ArrayList<Sprite>();
-		blocks = new ArrayList<Sprite>();
 	}
 
 	public void createWave() {
@@ -47,57 +52,52 @@ public class BlockWaves {
 		}
 		for (int i = 0; i < indices; i++) {
 			if (i == blurbPosition) {
-				Sprite blurb = null;
-				for (Sprite s : blurbs) {
-					if (s.getX() < -10) {
-						blurb = s;
-						break;
-					}
-				}
-				if (blurb == null) {
-					blurb = new Sprite(blurbTexture);
-					blurb.setSize(blurbWidth, blurbWidth);
-					blurbs.add(blurb);
-				}
-				blurb.setPosition(blurbX, (sectionHeight * i)
-						+ ((sectionHeight / 2) - (blurbWidth / 2)));
+				WaveComponent blurb = componentsPool.obtain();
+				blurb.init(initBlurbX, (sectionHeight * i) + initBlurbY, blurbWidth,
+						blurbWidth, ComponentType.BLURB);
+				activeWaveComponents.add(blurb);
 
 			} else if (i != blankPosition) {
 
-				Sprite block = null;
-				for (Sprite s : blocks) {
-					if (s.getX() < -10) {
-						block = s;
-						break;
-					}
-				}
-				if (block == null) {
-					block = new Sprite(blockTexture);
-					block.setSize(blockWidth, blockHeight);
-					blocks.add(block);
-				}
-				block.setPosition(x + width, (sectionHeight * i)
-						+ (sectionHeight * .15f));
+				WaveComponent b = componentsPool.obtain();
+				b.init(x + width, (sectionHeight * i) + (sectionHeight * .15f),
+						blockWidth, blockHeight, ComponentType.BLOCK);
+				activeWaveComponents.add(b);
+
 			}
 		}
 	}
 
 	public void updateLines(float speed) {
-		for (Sprite s : blurbs) {
-			s.setX(s.getX() - speed);
+		for (WaveComponent b : activeWaveComponents) {
+			b.update(speed);
 		}
-		for (Sprite s : blocks) {
-			s.setX(s.getX() - speed);
+
+		WaveComponent b;
+		int len = activeWaveComponents.size();
+		for (int i = len; --i >= 0;) {
+			b = activeWaveComponents.get(i);
+			if (b.isActive() == false) {
+				activeWaveComponents.remove(i);
+				componentsPool.free(b);
+			}
 		}
 	}
 
 	public void draw(SpriteBatch batch) {
-		for (Sprite s : blurbs) {
-			s.draw(batch);
-		}
-		for (Sprite s : blocks) {
-			s.draw(batch);
+		for (WaveComponent b : activeWaveComponents) {
+			if (b.getType() == ComponentType.BLOCK) {
+				batch.draw(blockTexture, b.getX(), b.getY(), b.getWidth(),
+						b.getHeight());
+			} else if (b.getType() == ComponentType.BLURB) {
+				batch.draw(blurbTexture, b.getX(), b.getY(), b.getWidth(),
+						b.getHeight());
+			}
 		}
 	}
 
+	public void dispose() {
+		blurbTexture.dispose();
+		blockTexture.dispose();
+	}
 }

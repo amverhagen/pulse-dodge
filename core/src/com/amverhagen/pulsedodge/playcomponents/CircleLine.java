@@ -6,15 +6,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CircleLine {
 	private float[] indexPositions;
-	private int activeIndex;
+	private byte activeIndex;
 	private Sprite circle;
-	private int indices;
+	private byte indices;
 
-	public CircleLine(int indices, float x_pos, float y_pos, int width,
+	public CircleLine(byte indices, float x_pos, float y_pos, int width,
 			int height) {
 		this.indices = indices;
 		float circleHeight = height / (indices * 3);
-		activeIndex = indices / 2;
+		activeIndex = (byte) (indices / 2);
 		indexPositions = new float[indices];
 		float sectionHeight = height / indices;
 		for (int i = 0; i < indices; i++) {
@@ -27,21 +27,21 @@ public class CircleLine {
 				circleHeight);
 	}
 
-	public void update() {
-		// if (movingUp) {
-		// circle.translateY(Gdx.graphics.getDeltaTime() * 2000);
-		// if (circle.getY() >= indexPositions[activeIndex]) {
-		// circle.setY(indexPositions[activeIndex]);
-		// movingUp = false;
-		// }
-		// } else if (movingDown) {
-		// circle.translateY(-(Gdx.graphics.getDeltaTime() * 2000));
-		// if (circle.getY() <= indexPositions[activeIndex]) {
-		// circle.setY(indexPositions[activeIndex]);
-		// movingDown = false;
-		// }
-		// }
-	}
+//	public void update() {
+//		// if (movingUp) {
+//		// circle.translateY(Gdx.graphics.getDeltaTime() * 2000);
+//		// if (circle.getY() >= indexPositions[activeIndex]) {
+//		// circle.setY(indexPositions[activeIndex]);
+//		// movingUp = false;
+//		// }
+//		// } else if (movingDown) {
+//		// circle.translateY(-(Gdx.graphics.getDeltaTime() * 2000));
+//		// if (circle.getY() <= indexPositions[activeIndex]) {
+//		// circle.setY(indexPositions[activeIndex]);
+//		// movingDown = false;
+//		// }
+//		// }
+//	}
 
 	public void moveUp() {
 		if (activeIndex < indices - 1) {

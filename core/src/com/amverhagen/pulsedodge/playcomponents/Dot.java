@@ -10,29 +10,39 @@ public class Dot {
 	public Dot(float x, float y) {
 		x_pos = x;
 		y_pos = y;
+		next = null;
+		previous = null;
 	}
-	
-	public boolean hasNext(){
-		if(next != null){
+
+	public boolean hasPrevious() {
+		if (previous != null) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	public void setNext(Dot d){
+
+	public boolean hasNext() {
+		if (next != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void setNext(Dot d) {
 		next = d;
 	}
-	
-	public void setPrevious(Dot d){
+
+	public void setPrevious(Dot d) {
 		previous = d;
 	}
-	
-	public Dot getNext(){
+
+	public Dot getNext() {
 		return next;
 	}
-	
-	public Dot getPrevious(){
+
+	public Dot getPrevious() {
 		return previous;
 	}
 
