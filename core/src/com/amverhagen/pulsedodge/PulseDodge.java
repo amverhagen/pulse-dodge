@@ -28,11 +28,13 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private BlockWaves waves;
 	private float time;
+	private boolean reset;
 	private float speed;
 
 	@Override
 	public void create() {
 		time = 0;
+		reset = true;
 		camera = new OrthographicCamera();
 		camera.position.set(GAME_WORLD_WIDTH / 2, GAME_WORLD_HEIGHT / 2, 0);
 		viewport = new FitViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
@@ -55,9 +57,15 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void render() {
 		time = time + Gdx.graphics.getDeltaTime();
+		if (time > .25 && reset) {
+			reset = false;
+			waves.createBar();
+		}
 		if (time > .5) {
+			reset = true;
 			time = 0;
 			waves.createWave();
+			waves.createBar();
 		}
 		speed = 1 * Gdx.graphics.getDeltaTime() * 500;
 
@@ -81,7 +89,7 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
-		 dotLine.draw(shapeRenderer);
+		dotLine.draw(shapeRenderer);
 		shapeRenderer.end();
 	}
 
