@@ -13,7 +13,7 @@ public class CircleLine {
 	public CircleLine(byte indices, float x_pos, float y_pos, int width,
 			int height) {
 		this.indices = indices;
-		float circleHeight = height / (indices * 3);
+		float circleHeight = height / (indices * 4);
 		activeIndex = (byte) (indices / 2);
 		indexPositions = new float[indices];
 		float sectionHeight = height / indices;

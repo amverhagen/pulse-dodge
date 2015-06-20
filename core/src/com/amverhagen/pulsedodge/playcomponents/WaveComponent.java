@@ -43,6 +43,10 @@ public class WaveComponent implements Poolable {
 		}
 	}
 
+	public void setUnactive() {
+		active = false;
+	}
+
 	public boolean isActive() {
 		return active;
 	}

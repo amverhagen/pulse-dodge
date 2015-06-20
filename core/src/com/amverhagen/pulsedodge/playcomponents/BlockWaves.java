@@ -3,6 +3,7 @@ package com.amverhagen.pulsedodge.playcomponents;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Pool;
 
@@ -39,7 +40,7 @@ public class BlockWaves {
 		blurbWidth = sectionHeight * .30f;
 		blockWidth = width / 25;
 		blockHeight = sectionHeight * .75f;
-		barWidth = width/100;
+		barWidth = width / 100;
 		initBlurbX = (x + width) + (blockWidth / 2) - (blurbWidth / 2);
 		initBlurbY = ((sectionHeight / 2) - blurbWidth / 2);
 		blockTexture = new Texture("small_green_block.png");
@@ -49,7 +50,8 @@ public class BlockWaves {
 
 	public void createBar() {
 		WaveComponent bar = componentsPool.obtain();
-		bar.init(x + width + (blockWidth/2) - barWidth/2, 0, barWidth, height, ComponentType.BAR);
+		bar.init(x + width + (blockWidth / 2) - barWidth / 2, 0, barWidth,
+				height, ComponentType.BAR);
 		activeWaveComponents.add(bar);
 	}
 
@@ -80,9 +82,18 @@ public class BlockWaves {
 		}
 	}
 
-	public void updateLines(float speed) {
+	public void updateLines(float speed, Sprite circle) {
+
 		for (WaveComponent b : activeWaveComponents) {
+			if (b.getType() == ComponentType.BLOCK)
+				if (circle.getX() < b.getX() + b.getWidth()
+						&& circle.getX() + circle.getWidth() > b.getX()
+						&& circle.getY() < b.getY() + b.getHeight()
+						&& circle.getY() + circle.getHeight() > b.getY()) {
+					b.setUnactive();
+				}
 			b.update(speed);
+
 		}
 
 		WaveComponent b;
