@@ -1,7 +1,7 @@
 package com.amverhagen.pulsedodge;
 
 import com.amverhagen.pulsedodge.playcomponents.BlockWaves;
-import com.amverhagen.pulsedodge.playcomponents.CircleLine;
+import com.amverhagen.pulsedodge.playcomponents.SpriteLine;
 import com.amverhagen.pulsedodge.playcomponents.Line;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -18,10 +18,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PulseDodge extends ApplicationAdapter implements InputProcessor {
-	private final int GAME_WORLD_WIDTH = 1600;
-	private final int GAME_WORLD_HEIGHT = 900;
+	private final int GAME_WORLD_WIDTH = 900;
+	private final int GAME_WORLD_HEIGHT = 1600;
 	private SpriteBatch batch;
-	private CircleLine circleLine;
+	// private CircleLine circleLine;
 	private Viewport viewport;
 	private Camera camera;
 	private Line dotLine;
@@ -41,8 +41,8 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		viewport.apply();
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
-		circleLine = new CircleLine((byte) 5, GAME_WORLD_WIDTH / 5f, 0f,
-				GAME_WORLD_WIDTH / 12, GAME_WORLD_HEIGHT);
+		// circleLine = new CircleLine(5, GAME_WORLD_WIDTH / 5f, 0f,
+		// GAME_WORLD_WIDTH / 12, GAME_WORLD_HEIGHT);
 		dotLine = new Line();
 		waves = new BlockWaves(0, 0, GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, 5);
 		Gdx.input.setInputProcessor(this);
@@ -69,11 +69,11 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 		}
 		speed = 1 * Gdx.graphics.getDeltaTime() * 1000;
 
-		waves.updateLines(speed,circleLine.getCircle());
+		// waves.updateLines(speed, circleLine.getCircle());
 
-		dotLine.AddDot(circleLine.getCircle().getX(),
-				circleLine.getCircleCenter());
-		dotLine.update(speed);
+		// dotLine.AddDot(circleLine.getCircle().getX(),
+		// circleLine.getCircleCenter());
+		// dotLine.update(speed);
 
 		camera.update();
 
@@ -82,14 +82,14 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		circleLine.getCircle().draw(batch);
+		// circleLine.getCircle().draw(batch);
 		waves.draw(batch);
 		batch.end();
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.GREEN);
-		dotLine.draw(shapeRenderer);
+		// dotLine.draw(shapeRenderer);
 		shapeRenderer.end();
 	}
 
@@ -97,17 +97,17 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	public void dispose() {
 		batch.dispose();
 		shapeRenderer.dispose();
-		circleLine.getCircle().getTexture().dispose();
+		// circleLine.getCircle().getTexture().dispose();
 		waves.dispose();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.W) {
-			circleLine.moveUp();
+			// circleLine.moveUp();
 		}
 		if (keycode == Keys.S) {
-			circleLine.moveDown();
+			// circleLine.moveDown();
 		}
 		return false;
 	}
@@ -115,46 +115,40 @@ public class PulseDodge extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (screenX > Gdx.graphics.getWidth() / 2) {
-			circleLine.moveUp();
+			// circleLine.moveUp();
 		} else {
-			circleLine.moveDown();
+			// circleLine.moveDown();
 		}
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }
