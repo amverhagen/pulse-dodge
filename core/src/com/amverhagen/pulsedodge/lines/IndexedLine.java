@@ -10,8 +10,8 @@ public class IndexedLine {
 
 	public IndexedLine(float xPos, float yPos, int numberOfIndices, int length) {
 		this.origin = new Vector2(xPos, yPos);
-		if (numberOfIndices < 0)
-			numberOfIndices = 0;
+		if (numberOfIndices < 1)
+			throw new IndexOutOfBoundsException("Index must be greater than 1.");
 		this.numberOfIndices = numberOfIndices;
 		this.lineLength = length;
 		this.initPositions();
@@ -36,7 +36,7 @@ public class IndexedLine {
 			float xPos = origin.x;
 			float yPos = origin.y;
 			for (int i = 0; i < positions.length; i++) {
-				xPos = (i * positionDifference);
+				xPos = origin.x + (i * positionDifference);
 				positions[i].x = xPos;
 				positions[i].y = yPos;
 			}

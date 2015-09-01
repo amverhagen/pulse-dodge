@@ -1,13 +1,13 @@
 package com.amverhagen.pulsedodge.lines;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
 
+import com.amverhagen.pulsedodge.collections.BoundedIndexMap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 public class MultiSpriteLine extends IndexedLine {
-	private HashMap<Integer, Sprite> map;
+	private BoundedIndexMap<Sprite> spriteMap;
 	private int numberOfSprites;
 	private Sprite sprite;
 	private boolean wrappable;
@@ -16,28 +16,26 @@ public class MultiSpriteLine extends IndexedLine {
 			Sprite sprite) {
 		super(xPos, yPos, numberOfIndices, length);
 		this.numberOfSprites = numberOfSprites;
-		if (this.numberOfSprites > super.numberOfIndices) {
+		spriteMap = new BoundedIndexMap<Sprite>(super.numberOfIndices);
+		if (this.numberOfSprites > super.numberOfIndices)
 			this.numberOfSprites = super.numberOfIndices;
-		}
 		this.wrappable = false;
 		this.sprite = sprite;
-		populateMap();
+		populateSprites();
 		bindSpritesToLine();
 	}
 
-	private void populateMap() {
-		map = new HashMap<Integer, Sprite>();
+	private void populateSprites() {
 		for (int i = 0; i < numberOfSprites; i++) {
-			map.put(i, new Sprite(sprite));
+			spriteMap.put(i, sprite);
 		}
 	}
 
 	private void bindSpritesToLine() {
-		for (int i = 0; i < super.numberOfIndices; i++) {
-			Sprite temp = map.get(i);
-			if (temp != null) {
+		for (int i = 0; i < spriteMap.getSize(); i++) {
+			if (spriteMap.hasValue(i)) {
 				Vector2 vector = super.getVectorAtIndex(i);
-				temp.setPosition(vector.x, vector.y);
+				spriteMap.get(i).setPosition(vector.x, vector.y);
 			}
 		}
 	}
@@ -47,16 +45,25 @@ public class MultiSpriteLine extends IndexedLine {
 	}
 
 	public void moveSpritesForward() {
-		if (wrappable) {
-		} else {
-
+		Sprite end = spriteMap.get(spriteMap.getSize() - 1);
+		if (!wrappable && end != null)
+			return;
+		for (int i = spriteMap.getSize() - 2; i >= 0; i--) {
+			Sprite temp = spriteMap.remove(i);
+			spriteMap.put(i++, temp);
 		}
+		spriteMap.put(0, end);
 	}
 
 	public void moveSpritesBackward() {
-		if (wrappable) {
-		} else {
+		Sprite first = spriteMap.get(0);
+		if (!wrappable && first != null)
+			return;
+		for (int i = 1; i < spriteMap.getSize(); i++) {
+			Sprite temp = spriteMap.remove(i);
+			spriteMap.put(i--, temp);
 		}
+		spriteMap.put(spriteMap.getSize() - 1, first);
 	}
 
 	public void randomlyPlaceSprites() {
@@ -78,7 +85,7 @@ public class MultiSpriteLine extends IndexedLine {
 		bindSpritesToLine();
 	}
 
-	public Collection<Sprite> getSprites() {
-		return map.values();
+	public ArrayList<Sprite> getSpriteList() {
+		return spriteMap.getEntries();
 	}
 }

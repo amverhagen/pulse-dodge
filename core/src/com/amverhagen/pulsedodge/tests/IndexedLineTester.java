@@ -9,11 +9,11 @@ import com.amverhagen.pulsedodge.lines.IndexedLine;
 public class IndexedLineTester {
 
 	@Test
-	public void testMoveUp() {
+	public void testMoveHorizontally() {
 		float initX = 0;
 		float xDifference = 30;
 		float xAfter = initX + xDifference;
-		for (int i = -400; i < 400; i++) {
+		for (int i = 1; i < 400; i++) {
 			IndexedLine iL = new IndexedLine(initX, 0f, i, 400);
 			iL.moveLineHorizontally(xDifference);
 			assertEquals((double) xAfter, (double) iL.getVectorAtIndex(i).x, .001d);
@@ -21,11 +21,11 @@ public class IndexedLineTester {
 	}
 
 	@Test
-	public void testMoveDown() {
+	public void testMoveVertically() {
 		float initY = 0;
 		float yDifference = 30;
 		float yAfter = initY + yDifference;
-		for (int i = -400; i < 400; i++) {
+		for (int i = 1; i < 400; i++) {
 			IndexedLine iL = new IndexedLine(0f, 0f, i, 400);
 			iL.moveLineVertically(yDifference);
 			assertEquals((double) yAfter, (double) iL.getVectorAtIndex(i).y, .001d);
