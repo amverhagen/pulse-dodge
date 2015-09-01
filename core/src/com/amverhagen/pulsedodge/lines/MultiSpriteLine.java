@@ -27,7 +27,7 @@ public class MultiSpriteLine extends IndexedLine {
 
 	private void populateSprites() {
 		for (int i = 0; i < numberOfSprites; i++) {
-			spriteMap.put(i, sprite);
+			spriteMap.put(i, new Sprite(sprite));
 		}
 	}
 
@@ -46,24 +46,28 @@ public class MultiSpriteLine extends IndexedLine {
 
 	public void moveSpritesForward() {
 		Sprite end = spriteMap.get(spriteMap.getSize() - 1);
-		if (!wrappable && end != null)
+		if (!wrappable && end != null) {
 			return;
+		}
 		for (int i = spriteMap.getSize() - 2; i >= 0; i--) {
 			Sprite temp = spriteMap.remove(i);
-			spriteMap.put(i++, temp);
+			spriteMap.put((i + 1), temp);
 		}
 		spriteMap.put(0, end);
+		bindSpritesToLine();
 	}
 
 	public void moveSpritesBackward() {
 		Sprite first = spriteMap.get(0);
-		if (!wrappable && first != null)
+		if (!wrappable && first != null) {
 			return;
+		}
 		for (int i = 1; i < spriteMap.getSize(); i++) {
 			Sprite temp = spriteMap.remove(i);
-			spriteMap.put(i--, temp);
+			spriteMap.put((i - 1), temp);
 		}
 		spriteMap.put(spriteMap.getSize() - 1, first);
+		bindSpritesToLine();
 	}
 
 	public void randomlyPlaceSprites() {
