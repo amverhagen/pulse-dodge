@@ -56,6 +56,14 @@ public class SpriteLine {
 		this.setSpritePosition();
 	}
 
+	public void setWrappable() {
+		wrappable = true;
+	}
+
+	public void setUnwrappable() {
+		wrappable = false;
+	}
+
 	private void setSpritePosition() {
 		sprite.setX(positions[currentPosition].x);
 	}
