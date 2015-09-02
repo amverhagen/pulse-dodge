@@ -13,18 +13,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class LineTester implements ApplicationListener {
 	Sprite sprite;
+	Sprite blockSprite;
 	SpriteBatch batch;
 	Texture blockTexture;
+	Texture circleTexture;
 	MultiSpriteLine blockLine;
 	ArrayList<MultiSpriteLine> blockLines;
 
 	@Override
 	public void create() {
+		circleTexture = new Texture(Gdx.files.internal("green_circle.png"));
 		blockTexture = new Texture(Gdx.files.internal("small_green_block.png"));
+		blockSprite = new Sprite(blockTexture);
+
 		batch = new SpriteBatch();
-		sprite = new Sprite(blockTexture);
+		sprite = new Sprite(circleTexture);
 		sprite.setSize(50, 100);
-		blockLine = new MultiSpriteLine(100, 100, 7, 400, 6, sprite);
+		blockSprite.setSize(50, 100);
+		blockLines = new ArrayList<MultiSpriteLine>();
+		blockLine = new MultiSpriteLine(100, 100, 7, 400, 5, sprite);
+		blockLine.setWrappable(true);
+		blockLines.add(blockLine);
 	}
 
 	@Override
@@ -32,8 +41,10 @@ public class LineTester implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		for (Sprite s : blockLine.getSpriteList()) {
-			s.draw(batch);
+		for (MultiSpriteLine msl : blockLines) {
+			for (Sprite s : msl.getSpriteList()) {
+				s.draw(batch);
+			}
 		}
 		batch.end();
 		if (Gdx.input.isKeyPressed(Keys.A)) {
@@ -50,6 +61,15 @@ public class LineTester implements ApplicationListener {
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
 			blockLine.moveSpritesBackward();
+		}
+		if (Gdx.input.isTouched()) {
+			MultiSpriteLine newLine = new MultiSpriteLine(Gdx.input.getX(), Gdx.input.getY(), 7, 400, 6, blockSprite);
+			blockLines.add(newLine);
+		}
+		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+			for (MultiSpriteLine msl : blockLines) {
+				msl.rotateLine(.1d);
+			}
 		}
 	}
 

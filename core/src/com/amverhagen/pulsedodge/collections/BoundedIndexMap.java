@@ -7,7 +7,7 @@ public class BoundedIndexMap<K> {
 
 	public BoundedIndexMap(int size) {
 		if (size < 1)
-			throw new IndexOutOfBoundsException("Index must be greater than 1.");
+			throw new IndexOutOfBoundsException("Index must be greater than or greater than 1.");
 		map = newMap(size);
 	}
 
@@ -16,7 +16,7 @@ public class BoundedIndexMap<K> {
 		return (K[]) new Object[size];
 	}
 
-	public K get(int index) {
+	public K getValueAtIndex(int index) {
 		if (index >= this.getSize() || index < 0)
 			return null;
 		return map[index];
@@ -32,8 +32,8 @@ public class BoundedIndexMap<K> {
 		map[index] = item;
 	}
 
-	public boolean hasValue(int index) {
-		if (this.get(index) != null)
+	public boolean hasValueAtIndex(int index) {
+		if (this.getValueAtIndex(index) != null)
 			return true;
 		return false;
 	}

@@ -33,9 +33,9 @@ public class MultiSpriteLine extends IndexedLine {
 
 	private void bindSpritesToLine() {
 		for (int i = 0; i < spriteMap.getSize(); i++) {
-			if (spriteMap.hasValue(i)) {
+			if (spriteMap.hasValueAtIndex(i)) {
 				Vector2 vector = super.getVectorAtIndex(i);
-				spriteMap.get(i).setPosition(vector.x, vector.y);
+				spriteMap.getValueAtIndex(i).setPosition(vector.x, vector.y);
 			}
 		}
 	}
@@ -45,7 +45,7 @@ public class MultiSpriteLine extends IndexedLine {
 	}
 
 	public void moveSpritesForward() {
-		Sprite end = spriteMap.get(spriteMap.getSize() - 1);
+		Sprite end = spriteMap.getValueAtIndex(spriteMap.getSize() - 1);
 		if (!wrappable && end != null) {
 			return;
 		}
@@ -58,7 +58,7 @@ public class MultiSpriteLine extends IndexedLine {
 	}
 
 	public void moveSpritesBackward() {
-		Sprite first = spriteMap.get(0);
+		Sprite first = spriteMap.getValueAtIndex(0);
 		if (!wrappable && first != null) {
 			return;
 		}
@@ -86,6 +86,12 @@ public class MultiSpriteLine extends IndexedLine {
 	@Override
 	public void moveLineVertically(float yDifference) {
 		super.moveLineVertically(yDifference);
+		bindSpritesToLine();
+	}
+
+	@Override
+	public void rotateLine(double radians) {
+		super.rotateLine(radians);
 		bindSpritesToLine();
 	}
 

@@ -8,10 +8,10 @@ public class IndexedLine {
 	protected int numberOfIndices;
 	private int lineLength;
 
-	public IndexedLine(float xPos, float yPos, int numberOfIndices, int length) {
+	public IndexedLine(float xPos, float yPos, int numberOfIndices, int length) throws IndexOutOfBoundsException {
 		this.origin = new Vector2(xPos, yPos);
 		if (numberOfIndices < 1)
-			throw new IndexOutOfBoundsException("Index must be greater than 1.");
+			throw new IndexOutOfBoundsException("Index must be greater than or equal to 1.");
 		this.numberOfIndices = numberOfIndices;
 		this.lineLength = length;
 		this.initPositions();
@@ -51,12 +51,26 @@ public class IndexedLine {
 
 	public void moveLineHorizontally(float xDifference) {
 		origin.x += xDifference;
-		setPositionsBasedOnOrigin();
+		for (int i = 0; i < positions.length; i++) {
+			positions[i].x += xDifference;
+		}
 	}
 
 	public void moveLineVertically(float yDifference) {
 		origin.y += yDifference;
-		setPositionsBasedOnOrigin();
+		for (int i = 0; i < positions.length; i++) {
+			positions[i].y += yDifference;
+		}
+	}
+
+	public void rotateLine(double radians) {
+		for (int i = 0; i < positions.length; i++) {
+			double newX = Math.cos(radians) * (positions[i].x - origin.x)
+					- (Math.sin(radians) * (positions[i].y - origin.y)) + origin.x;
+			double newY = Math.sin(radians) * (positions[i].x - origin.x)
+					+ Math.cos(radians) * (positions[i].y - origin.y) + origin.y;
+			positions[i].set((float) newX, (float) newY);
+		}
 	}
 
 	public Vector2 getVectorAtIndex(int location) {
