@@ -48,6 +48,9 @@ public class LineTester implements ApplicationListener {
 		}
 		batch.end();
 		if (Gdx.input.isKeyPressed(Keys.A)) {
+			for (MultiSpriteLine msl : blockLines) {
+				msl.moveLineHorizontally(-20);
+			}
 			blockLine.moveLineHorizontally(-20);
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			blockLine.moveLineHorizontally(20);
@@ -68,7 +71,7 @@ public class LineTester implements ApplicationListener {
 		}
 		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
 			for (MultiSpriteLine msl : blockLines) {
-				msl.rotateLine(.1d);
+				msl.rotateLine(-.1d);
 			}
 		}
 	}

@@ -10,29 +10,27 @@ public class MultiSpriteLine extends IndexedLine {
 	private BoundedIndexMap<Sprite> spriteMap;
 	private int numberOfSprites;
 	private Sprite sprite;
-	private boolean wrappable;
 
 	public MultiSpriteLine(float xPos, float yPos, int numberOfIndices, int length, int numberOfSprites,
 			Sprite sprite) {
 		super(xPos, yPos, numberOfIndices, length);
 		this.numberOfSprites = numberOfSprites;
-		spriteMap = new BoundedIndexMap<Sprite>(super.numberOfIndices);
 		if (this.numberOfSprites > super.numberOfIndices)
 			this.numberOfSprites = super.numberOfIndices;
-		this.wrappable = false;
 		this.sprite = sprite;
+		spriteMap = new BoundedIndexMap<Sprite>(super.numberOfIndices);
 		populateSprites();
 		bindSpritesToLine();
 	}
 
 	private void populateSprites() {
 		for (int i = 0; i < numberOfSprites; i++) {
-			spriteMap.put(i, new Sprite(sprite));
+			spriteMap.putEntryAtIndex(i, new Sprite(sprite));
 		}
 	}
 
 	private void bindSpritesToLine() {
-		for (int i = 0; i < spriteMap.getSize(); i++) {
+		for (int i = 0; i < spriteMap.getMapSize(); i++) {
 			if (spriteMap.hasValueAtIndex(i)) {
 				Vector2 vector = super.getVectorAtIndex(i);
 				spriteMap.getValueAtIndex(i).setPosition(vector.x, vector.y);
@@ -41,32 +39,16 @@ public class MultiSpriteLine extends IndexedLine {
 	}
 
 	public void setWrappable(boolean value) {
-		wrappable = value;
+		spriteMap.wrappable = value;
 	}
 
 	public void moveSpritesForward() {
-		Sprite end = spriteMap.getValueAtIndex(spriteMap.getSize() - 1);
-		if (!wrappable && end != null) {
-			return;
-		}
-		for (int i = spriteMap.getSize() - 2; i >= 0; i--) {
-			Sprite temp = spriteMap.remove(i);
-			spriteMap.put((i + 1), temp);
-		}
-		spriteMap.put(0, end);
+		spriteMap.shiftAllEntriesUpOneIndex();
 		bindSpritesToLine();
 	}
 
 	public void moveSpritesBackward() {
-		Sprite first = spriteMap.getValueAtIndex(0);
-		if (!wrappable && first != null) {
-			return;
-		}
-		for (int i = 1; i < spriteMap.getSize(); i++) {
-			Sprite temp = spriteMap.remove(i);
-			spriteMap.put((i - 1), temp);
-		}
-		spriteMap.put(spriteMap.getSize() - 1, first);
+		spriteMap.shiftAllEntriesDownOneIndex();
 		bindSpritesToLine();
 	}
 
@@ -75,6 +57,10 @@ public class MultiSpriteLine extends IndexedLine {
 
 	public void moveSpritesToCenter() {
 
+	}
+
+	public ArrayList<Sprite> getSpriteList() {
+		return spriteMap.getAllEntriesAsList();
 	}
 
 	@Override
@@ -93,9 +79,5 @@ public class MultiSpriteLine extends IndexedLine {
 	public void rotateLine(double radians) {
 		super.rotateLine(radians);
 		bindSpritesToLine();
-	}
-
-	public ArrayList<Sprite> getSpriteList() {
-		return spriteMap.getEntries();
 	}
 }
